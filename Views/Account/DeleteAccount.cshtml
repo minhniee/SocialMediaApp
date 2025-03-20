@@ -1,0 +1,75 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.DeleteAccountViewModel
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Delete Account</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="list-group">
+                            <a asp-action="Edit" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person-fill me-2"></i> Profile
+                            </a>
+                            <a asp-action="ManageAccount" class="list-group-item list-group-item-action">
+                                <i class="bi bi-gear-fill me-2"></i> Account
+                            </a>
+                            <a asp-action="PrivacySettings" class="list-group-item list-group-item-action">
+                                <i class="bi bi-shield-lock-fill me-2"></i> Privacy
+                            </a>
+                            <a asp-action="DeleteAccount" class="list-group-item list-group-item-action active text-white">
+                                <i class="bi bi-trash-fill me-2"></i> Delete Account
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <div class="alert alert-danger">
+                            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i> Warning!</h4>
+                            <p>Deleting your account is permanent and cannot be undone. All your data, including:</p>
+                            <ul>
+                                <li>Profile information</li>
+                                <li>Posts and comments</li>
+                                <li>Photos and media</li>
+                                <li>Friend connections</li>
+                            </ul>
+                            <p>will be permanently deleted.</p>
+                        </div>
+                        
+                        <form asp-action="ConfirmDeleteAccount" method="post">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            
+                            <div class="form-floating mb-3">
+                                <input asp-for="Password" class="form-control" placeholder="Password" />
+                                <label asp-for="Password"></label>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input asp-for="ConfirmDelete" class="form-check-input" />
+                                <label asp-for="ConfirmDelete" class="form-check-label"></label>
+                                <span asp-validation-for="ConfirmDelete" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a asp-action="ManageAccount" class="btn btn-outline-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-danger">Delete My Account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

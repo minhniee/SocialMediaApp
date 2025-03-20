@@ -1,0 +1,70 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SocialMediaApp.Services
+
+
+
+@inject INotificationService NotificationService
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var unreadCount = await NotificationService.GetUnreadNotificationCountAsync(userId);
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell-fill"></i>
+        @if (unreadCount > 0)
+        {
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @(unreadCount > 99 ? "99+" : unreadCount.ToString())
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        }
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationsDropdown">
+        <li>
+            <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                Notifications
+                <a asp-controller="Notifications" asp-action="Index" class="text-decoration-none small">See all</a>
+            </h6>
+        </li>
+
+        @{
+            var notifications = await NotificationService.GetUserNotificationsAsync(userId, 5);
+        }
+
+        @if (notifications.Any())
+        {
+            foreach (var notification in notifications)
+            {
+                <li>
+                    <a class="dropdown-item @(notification.IsRead ? "" : "bg-light")" href="#">
+                        <div class="d-flex align-items-center">
+                            <img src="@(string.IsNullOrEmpty(notification.SourceUser?.ProfilePictureUrl) ? "/images/default-profile.png" : notification.SourceUser.ProfilePictureUrl)"
+                                 class="rounded-circle me-2" width="32" height="32" alt="Profile picture">
+                            <div class="small">
+                                <div>@notification.Message</div>
+                                <div class="text-muted">@notification.TimeAgo</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+        else
+        {
+            <li><div class="dropdown-item text-center py-3">No notifications</div></li>
+        }
+
+        @if (unreadCount > 0)
+        {
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-controller="Notifications" asp-action="MarkAllAsRead" method="post" class="text-center py-2">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Mark all as read</button>
+                </form>
+            </li>
+        }
+    </ul>
+</li>
+

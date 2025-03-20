@@ -1,0 +1,44 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.LoginWith2faViewModel
+@{
+    ViewData["Title"] = "Two-factor Authentication";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Two-factor Authentication</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-center mb-4">Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+                
+                <form asp-action="LoginWith2fa" asp-route-returnurl="@returnUrl" method="post">
+                    <input asp-for="RememberMe" type="hidden" />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    
+                    <div class="form-floating mb-3">
+                        <input asp-for="TwoFactorCode" class="form-control" placeholder="Authenticator code" autocomplete="off" />
+                        <label asp-for="TwoFactorCode"></label>
+                        <span asp-validation-for="TwoFactorCode" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input asp-for="RememberMachine" class="form-check-input" />
+                        <label asp-for="RememberMachine" class="form-check-label"></label>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

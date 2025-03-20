@@ -1,0 +1,51 @@
+@using Microsoft.AspNetCore.Identity
+@using SocialMediaApp.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+  <li class="nav-item">
+      <form class="d-flex me-3" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+  </li>
+  
+  <partial name="_NotificationPartial" />
+  
+  <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          @{
+              var user = await UserManager.GetUserAsync(User);
+              var profilePic = string.IsNullOrEmpty(user?.ProfilePictureUrl) ? "/images/default-profile.JPG" : user.ProfilePictureUrl;
+          }
+          <img src="@profilePic" class="rounded-circle me-1" width="24" height="24" alt="Profile picture">
+          @User.Identity?.Name
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">My Profile</a></li>
+          <li><a class="dropdown-item" asp-controller="Account" asp-action="ManageAccount">Account Settings</a></li>
+          <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Logout</a></li>
+
+          @* <li>
+              <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                  <button type="submit" class="dropdown-item">Logout</button>
+              </form>
+          </li> *@
+      </ul>
+  </li>
+}
+else
+{
+  <li class="nav-item">
+      <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+  </li>
+}
+</ul>
+

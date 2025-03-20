@@ -1,0 +1,88 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SocialMediaApp.ViewModels
+@model SocialMediaApp.ViewModels.PrivacySettingsViewModel
+@{
+    ViewData["Title"] = "Privacy Settings";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Privacy Settings</h2>
+            </div>
+            <div class="card-body">
+                @if (TempData["StatusMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["StatusMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="list-group">
+                            <a asp-action="Edit" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person-fill me-2"></i> Profile
+                            </a>
+                            <a asp-action="ManageAccount" class="list-group-item list-group-item-action">
+                                <i class="bi bi-gear-fill me-2"></i> Account
+                            </a>
+                            <a asp-action="PrivacySettings" class="list-group-item list-group-item-action active">
+                                <i class="bi bi-shield-lock-fill me-2"></i> Privacy
+                            </a>
+                            <a asp-action="DeleteAccount" class="list-group-item list-group-item-action text-danger">
+                                <i class="bi bi-trash-fill me-2"></i> Delete Account
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <h4>Privacy Settings</h4>
+                        <p class="text-muted">Control who can see your information and how your account interacts with others.</p>
+                        <hr />
+                        
+                        <form asp-action="PrivacySettings" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="ProfileVisibility" class="form-label"></label>
+                                <select asp-for="ProfileVisibility" class="form-select">
+                                    <option value="@ProfileVisibility.Everyone">Everyone</option>
+                                    <option value="@ProfileVisibility.FriendsOnly">Friends Only</option>
+                                    <option value="@ProfileVisibility.OnlyMe">Only Me</option>
+                                </select>
+                                <span asp-validation-for="ProfileVisibility" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input asp-for="AllowFriendRequests" class="form-check-input" />
+                                <label asp-for="AllowFriendRequests" class="form-check-label"></label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input asp-for="ShowOnlineStatus" class="form-check-input" />
+                                <label asp-for="ShowOnlineStatus" class="form-check-label"></label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input asp-for="AllowTagging" class="form-check-input" />
+                                <label asp-for="AllowTagging" class="form-check-label"></label>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

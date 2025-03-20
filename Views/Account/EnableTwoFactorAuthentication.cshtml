@@ -1,0 +1,88 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.EnableAuthenticatorViewModel
+@{
+    ViewData["Title"] = "Enable Two-Factor Authentication";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Enable Two-Factor Authentication</h2>
+            </div>
+            <div class="card-body">
+                <p>To use an authenticator app, follow these steps:</p>
+                <ol class="mb-4">
+                    <li>
+                        <p>
+                            Download a two-factor authenticator app like Microsoft Authenticator,
+                            Google Authenticator, or any other compatible TOTP app.
+                        </p>
+                    </li>
+                    <li>
+                        <p>Scan the QR Code or enter the key below into your authenticator app:</p>
+                        <div class="row">
+                            <div class="col-md-6 text-center mb-3">
+                                <div id="qrCode" class="mx-auto"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Authenticator Key</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.SharedKey" readonly />
+                                        <button class="btn btn-outline-secondary" type="button" id="copyButton">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <p>
+                            Once you have scanned the QR code or entered the key, your authenticator app will display
+                            a unique code. Enter the code below to verify your authenticator app is working correctly.
+                        </p>
+                    </li>
+                </ol>
+                
+                <form asp-action="EnableTwoFactorAuthentication" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="SharedKey" type="hidden" />
+                    <input asp-for="AuthenticatorUri" type="hidden" />
+                    
+                    <div class="form-floating mb-3">
+                        <input asp-for="Code" class="form-control" placeholder="Verification Code" autocomplete="off" />
+                        <label asp-for="Code"></label>
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="ManageAccount" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Verify</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+ @*    <script src="~/lib/qrcode.js/qrcode.min.js"></script>*@
+    <script type="text/javascript">
+        // new QRCode(document.getElementById("qrCode"), {
+        //     text: "@Html.Raw(Model.AuthenticatorUri)",
+        //     width: 200,
+        //     height: 200
+        // }); 
+        
+        document.getElementById("copyButton").addEventListener("click", function() {
+            var input = document.querySelector("input[value='@Model.SharedKey']");
+            input.select();
+            document.execCommand("copy");
+            alert("Key copied to clipboard!");
+        });
+    </script>
+}
+

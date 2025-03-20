@@ -1,0 +1,127 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.ManageAccountViewModel
+@{
+    ViewData["Title"] = "Manage Account";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Manage Your Account</h2>
+            </div>
+            <div class="card-body">
+                @if (TempData["StatusMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["StatusMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="list-group">
+                            <a asp-action="Edit" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person-fill me-2"></i> Profile
+                            </a>
+                            <a asp-action="ManageAccount" class="list-group-item list-group-item-action active">
+                                <i class="bi bi-gear-fill me-2"></i> Account
+                            </a>
+                            <a asp-action="PrivacySettings" class="list-group-item list-group-item-action">
+                                <i class="bi bi-shield-lock-fill me-2"></i> Privacy
+                            </a>
+                            <a asp-action="DeleteAccount" class="list-group-item list-group-item-action text-danger">
+                                <i class="bi bi-trash-fill me-2"></i> Delete Account
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <h4>Account Settings</h4>
+                        <hr />
+                        
+                        <div class="mb-4">
+                            <h5>Email</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1">@Model.Email</p>
+                                    @if (Model.IsEmailConfirmed)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i> Verified</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle-fill me-1"></i> Not verified</span>
+                                    }
+                                </div>
+                                <div>
+                                    <a asp-action="ChangeEmail" class="btn btn-outline-primary btn-sm">Change</a>
+                                    @if (!Model.IsEmailConfirmed)
+                                    {
+                                        <form asp-action="SendVerificationEmail" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-success btn-sm">Send verification</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Password</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">••••••••</p>
+                                <a asp-action="Edit" class="btn btn-outline-primary btn-sm">Change</a>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Two-factor Authentication</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    @if (Model.TwoFactorEnabled)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-shield-check-fill me-1"></i> Enabled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="bi bi-shield-fill me-1"></i> Disabled</span>
+                                    }
+                                </div>
+                                <div>
+                                    @if (Model.TwoFactorEnabled)
+                                    {
+                                        <form asp-action="DisableTwoFactorAuthentication" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Disable</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="EnableTwoFactorAuthentication" class="btn btn-outline-success btn-sm">Enable</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Phone Number</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Not set" : Model.PhoneNumber)</p>
+                                <a href="#" class="btn btn-outline-primary btn-sm">Add/Change</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

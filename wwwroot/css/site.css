@@ -1,0 +1,117 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: #f8f9fa;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+
+/* Custom styles for social media app */
+
+/* Landing page styles */
+.landing-page {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.landing-page .feature-icon {
+  background-color: #4e73df;
+}
+
+.landing-page .card {
+  transition: transform 0.3s ease;
+}
+
+.landing-page .card:hover {
+  transform: translateY(-5px);
+}
+
+/* Post card styling */
+.post-card {
+  transition: box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Comment bubble styling */
+.comment-bubble {
+  background-color: #f0f2f5;
+  border-radius: 18px;
+  padding: 8px 12px;
+  max-width: 100%;
+}
+
+/* Notification dropdown */
+.notification-dropdown {
+  width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+@media (max-width: 576px) {
+  .notification-dropdown {
+    width: 300px;
+  }
+}
+
+/* Profile page */
+.profile-header {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+/* Friend list */
+.friend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+}
+
+.friend-item {
+  text-align: center;
+}
+
+.friend-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+

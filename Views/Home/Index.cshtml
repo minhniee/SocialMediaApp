@@ -1,0 +1,142 @@
+@model SocialMediaApp.ViewModels.HomeViewModel
+
+
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <!-- Sidebar -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Welcome, @User.Identity.Name!</h5>
+                <div class="list-group mt-3">
+                    <a asp-controller="Profile" asp-action="Index" class="list-group-item list-group-item-action">
+                        <i class="bi bi-person-fill"></i> My Profile
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-bell-fill"></i> Notifications
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-people-fill"></i> Friends
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-gear-fill"></i> Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Create Post -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Create Post</h5>
+                <form asp-controller="Posts" asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <textarea asp-for="NewPost.Content" class="form-control" rows="3" placeholder="What's on your mind?"></textarea>
+                        <span asp-validation-for="NewPost.Content" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewPost.Image" class="form-label">Add Image</label>
+                        <input asp-for="NewPost.Image" type="file" class="form-control" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Feed -->
+        @if (Model.Posts.Any())
+
+        {
+
+            foreach (var post in Model.Posts)
+
+            {
+                <partial name="_PostPartial" model="post" />
+            }
+
+        }
+
+        else
+
+        {
+            <div class="alert alert-info">
+                No posts to show. Follow some friends to see their posts here!
+            </div>
+        }
+    </div>
+
+    <div class="col-md-3">
+        <!-- Right Sidebar - Friend Suggestions -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">People You May Know</h5>
+                <div class="list-group mt-3">
+	                <!-- This would be populated dynamically -->
+	                @foreach (var user in Model.FriendModel )
+	                {
+	                <a asp-action="Index" asp-controller="Profile" asp-route-id="@user.Id"  class="list-group-item list-group-item-action d-flex align-items-center">
+		                <img src="@user.ProfilePictureUrl" class="rounded-circle me-2" width="32" height="32" alt="Profile picture">
+		                <div>
+			                <div class="fw-bold">@user.FullName</div>
+			                <small class="text-muted">@user.JoinDate</small>
+		                </div>
+	                </a>
+	                }
+	                @*     @{
+		                var users = Model.User.Where(u => u.UserName != User.Identity.Name).ToList();
+                    }
+
+                    
+
+	                @if (users != null && users.Any())
+	                {
+		                foreach (var user in users)
+		                {
+			                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center">
+				                <img src="/placeholder.svg" class="rounded-circle me-2" width="32" height="32" alt="Profile picture">
+				                <div>
+					                <div class="fw-bold">@user.UserName</div>
+					                <small class="text-muted">5 mutual friends</small>
+				                </div>
+			                </a>
+		                }
+	                }
+	                else
+	                { *@
+		                @* <div class="alert alert-info">No users found.</div> *@
+	                @* } *@
+                    
+               
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Topics -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Trending</h5>
+                <div class="list-group mt-3">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="fw-bold">#Technology</div>
+                        <small class="text-muted">1.2K posts</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="fw-bold">#Programming</div>
+                        <small class="text-muted">856 posts</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="fw-bold">#ASPNETCore</div>
+                        <small class="text-muted">543 posts</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
