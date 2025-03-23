@@ -80,13 +80,16 @@
 	                <!-- This would be populated dynamically -->
 	                @foreach (var user in Model.FriendModel )
 	                {
-	                <a asp-action="Index" asp-controller="Profile" asp-route-id="@user.Id"  class="list-group-item list-group-item-action d-flex align-items-center">
-		                <img src="@user.ProfilePictureUrl" class="rounded-circle me-2" width="32" height="32" alt="Profile picture">
-		                <div>
-			                <div class="fw-bold">@user.FullName</div>
-			                <small class="text-muted">@user.JoinDate</small>
-		                </div>
-	                </a>
+		                <a asp-action="Index" asp-controller="Profile" asp-route-id="@user.Id" class="list-group-item list-group-item-action d-flex align-items-center">
+                            @{
+                                var profilePic = string.IsNullOrEmpty(user.ProfilePictureUrl) ? "/images/default-profile.JPG" : user.ProfilePictureUrl;
+                            }
+                            <img src="@profilePic " class="rounded-circle me-2" width="32" height="32" alt="Profile picture">
+			                <div>
+				                <div class="fw-bold">@user.FullName</div>
+				                <small class="text-muted">@user.JoinDate</small>
+			                </div>
+		                </a>
 	                }
 	                @*     @{
 		                var users = Model.User.Where(u => u.UserName != User.Identity.Name).ToList();

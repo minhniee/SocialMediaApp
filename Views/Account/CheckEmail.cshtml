@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Email</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                primary: {
+                  DEFAULT: '#0070f3',
+                  foreground: '#ffffff',
+                },
+                muted: {
+                  DEFAULT: '#f1f5f9',
+                  foreground: '#64748b',
+                },
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto flex items-center justify-center min-h-screen py-12 px-4">
+        <div class="w-full max-w-md mx-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div class="p-6 space-y-1 text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="rounded-full bg-blue-100 p-6">
+                        <i data-lucide="mail" class="h-12 w-12 text-primary"></i>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold">Check your email</h1>
+                <p class="text-gray-500 text-base">
+                    We've sent you a verification link to confirm your email address
+                </p>
+            </div>
+            <div class="px-6 pb-4 space-y-4">
+                <div id="successAlert" class="border border-green-500 bg-green-50 text-green-800 p-4 rounded-md hidden">
+                    <p>Verification email has been resent successfully!</p>
+                </div>
+
+                <div class="space-y-2 text-center text-sm text-muted-foreground">
+                    <p>
+                        Please check your inbox and click on the verification link to complete your registration.
+                    </p>
+                    <p>
+                        If you don't see the email, check your spam folder.
+                    </p>
+                </div>
+            </div>
+            <div class="px-6 pb-6 space-y-3">
+                <button id="resendButton"
+                        class="w-full border border-gray-300 bg-white text-gray-900 py-2 px-4 rounded-md font-medium">
+                    Resend verification email
+                </button>
+                <div class="text-center text-sm">
+                    <a asp-page="/Account/Login" class="text-primary hover:underline">
+                        Back to login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        document.getElementById('resendButton').addEventListener('click', function() {
+          const button = this;
+          const successAlert = document.getElementById('successAlert');
+
+          // Disable button and show loading state
+          button.disabled = true;
+          button.textContent = 'Sending...';
+
+          // Simulate API call to resend verification email
+          setTimeout(function() {
+            // Show success message
+            successAlert.classList.remove('hidden');
+            button.textContent = 'Resend verification email';
+
+            // Reset success message after 5 seconds
+            setTimeout(function() {
+              successAlert.classList.add('hidden');
+              button.disabled = false;
+            }, 5000);
+          }, 1500);
+        });
+    </script>
+</body>
+</html>
