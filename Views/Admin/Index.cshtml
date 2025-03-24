@@ -1,0 +1,246 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SocialMediaApp.Services
+@model SocialMediaApp.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+
+    <!-- Time Range Selector -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="btn-group" role="group">
+                <a asp-action="Index" asp-route-timeRange="@TimeRange.Day" class="btn @(Model.TimeRange == TimeRange.Day ? "btn-primary" : "btn-outline-primary")">Day</a>
+                <a asp-action="Index" asp-route-timeRange="@TimeRange.Week" class="btn @(Model.TimeRange == TimeRange.Week ? "btn-primary" : "btn-outline-primary")">Week</a>
+                <a asp-action="Index" asp-route-timeRange="@TimeRange.Month" class="btn @(Model.TimeRange == TimeRange.Month ? "btn-primary" : "btn-outline-primary")">Month</a>
+                <a asp-action="Index" asp-route-timeRange="@TimeRange.Year" class="btn @(Model.TimeRange == TimeRange.Year ? "btn-primary" : "btn-outline-primary")">Year</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- User Stats Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserStatistics.TotalUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-people-fill fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Users Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                New Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserStatistics.NewUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-plus-fill fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Users Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Active Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserStatistics.ActiveUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-check-fill fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inactive Users Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Inactive Users</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.UserStatistics.InactiveUsers</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-dash-fill fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Content Stats Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Content Statistics</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Content Type</th>
+                                    <th>Total</th>
+                                    <th>New</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Posts</td>
+                                    <td>@Model.ContentStatistics.TotalPosts</td>
+                                    <td>@Model.ContentStatistics.NewPosts</td>
+                                </tr>
+                                <tr>
+                                    <td>Comments</td>
+                                    <td>@Model.ContentStatistics.TotalComments</td>
+                                    <td>@Model.ContentStatistics.NewComments</td>
+                                </tr>
+                                <tr>
+                                    <td>Likes</td>
+                                    <td>@Model.ContentStatistics.TotalLikes</td>
+                                    <td>@Model.ContentStatistics.NewLikes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Traffic Chart -->
+        <div class="col-xl-8 col-md-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Traffic</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Row -->
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("Users", "Admin")" class="btn btn-primary btn-block">
+                                <i class="bi bi-people-fill mr-2"></i> Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="@Url.Action("ContentModeration", "Admin")" class="btn btn-warning btn-block">
+                                <i class="bi bi-shield-fill-check mr-2"></i> Content Moderation
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-success btn-block">
+                                <i class="bi bi-graph-up mr-2"></i> Analytics
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="#" class="btn btn-info btn-block">
+                                <i class="bi bi-gear-fill mr-2"></i> Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // Traffic Chart
+        var ctx = document.getElementById('trafficChart').getContext('2d');
+        var trafficChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.TrafficData.Select(d => $"'{d.Label}'")))],
+                datasets: [{
+                    label: 'User Activity',
+                    data: [@string.Join(",", Model.TrafficData.Select(d => d.Value))],
+                    backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    pointRadius: 3,
+                    pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                    pointBorderColor: 'rgba(78, 115, 223, 1)',
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+                    pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+}
+

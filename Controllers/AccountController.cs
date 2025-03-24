@@ -119,11 +119,11 @@ public class AccountController : Controller
             return View(model);
         }
 
-        // var result = await _signInManager.PasswordSignInAsync(
-        //     user.UserName,
-        //     model.Password,
-        //     model.RememberMe,
-        //     lockoutOnFailure: true);
+        var result = await _signInManager.PasswordSignInAsync(
+            user.UserName,
+            model.Password,
+            model.RememberMe,
+            lockoutOnFailure: true);
 
         if (result.Succeeded)
         {

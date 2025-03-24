@@ -1,0 +1,195 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.UserManagementViewModel
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">User Details</h1>
+
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["StatusMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- User Info Card -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img class="img-profile rounded-circle" src="/images/default-profile.png" style="width: 150px; height: 150px;">
+                        <h4 class="mt-3">@Model.FullName</h4>
+                        <p class="text-muted">@@@Model.UserName</p>
+                        
+                        @if (Model.IsLockedOut)
+                        {
+                            <span class="badge bg-danger">Account Locked</span>
+                            <p class="small text-muted mt-2">
+                                Locked until: @(Model.LockoutEnd?.ToString("MMM d, yyyy h:mm tt") ?? "Permanent")
+                            </p>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Account Active</span>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold">Email:</h6>
+                        <p>@Model.Email</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold">Join Date:</h6>
+                        <p>@Model.JoinDate.ToString("MMM d, yyyy")</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold">Roles:</h6>
+                        <div>
+                            @foreach (var role in Model.Roles)
+                            {
+                                <span class="badge bg-primary me-1">@role</span>
+                            }
+                            @if (!Model.Roles.Any())
+                            {
+                                <span class="text-muted">No roles assigned</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold">Activity:</h6>
+                        <p>Posts: @Model.PostCount | Comments: @Model.CommentCount</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Card -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-primary btn-block">
+                                <i class="bi bi-key"></i> Change Password
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a asp-action="ManageRoles" asp-route-id="@Model.Id" class="btn btn-info btn-block">
+                                <i class="bi bi-person-badge"></i> Manage Roles
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        @if (Model.IsLockedOut)
+                        {
+                            <div class="col-md-12 mb-3">
+                                <form asp-action="UnlockUser" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to unlock this user?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        <i class="bi bi-unlock"></i> Unlock Account
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-12 mb-3">
+                                <button type="button" class="btn btn-danger btn-block" data-bs-toggle="modal" data-bs-target="#lockUserModal">
+                                    <i class="bi bi-lock"></i> Lock Account
+                                </button>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Recent Posts -->
+                    <div class="mt-4">
+                        <h5 class="font-weight-bold">Recent Posts</h5>
+                        @if (Model.RecentPosts.Any())
+                        {
+                            <div class="list-group">
+                                @foreach (var post in Model.RecentPosts)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">@(post.Content.Length > 50 ? post.Content.Substring(0, 50) + "..." : post.Content)</h6>
+                                            <small>@post.CreatedAt.ToString("MMM d, yyyy")</small>
+                                        </div>
+                                        <p class="mb-1">
+                                            <small class="text-muted">
+                                                <i class="bi bi-heart"></i> @post.LikeCount
+                                                @* <i class="bi bi-chat ms-2"></i> @post.CommentCount *@
+                                            </small>
+                                        </p>
+                                        <a href="#" class="btn btn-sm btn-outline-primary mt-2">View Post</a>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No posts yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lock User Modal -->
+<div class="modal fade" id="lockUserModal" tabindex="-1" aria-labelledby="lockUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lockUserModalLabel">Lock User Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="LockUser" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Lock Duration</label>
+                        <select name="lockDuration" class="form-select">
+                            <option value="1">1 Day</option>
+                            <option value="7">7 Days</option>
+                            <option value="30">30 Days</option>
+                            <option value="-1">Permanent</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        Locking this account will prevent the user from logging in until the account is unlocked or the lock period expires.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Lock Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

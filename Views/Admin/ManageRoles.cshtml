@@ -1,0 +1,112 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SocialMediaApp.ViewModels.UserRoleViewModel
+@{
+    ViewData["Title"] = "Manage User Roles";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Manage Roles for @Model.UserName</h1>
+
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["StatusMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Current Roles Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Current Roles</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentRoles.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var role in Model.CurrentRoles)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@role</span>
+                                    <form asp-action="RemoveFromRole" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@Model.UserId" />
+                                        <input type="hidden" name="roleName" value="@role" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-x"></i> Remove
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">User has no roles assigned.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- Add Role Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Add Role</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.AvailableRoles.Any())
+                    {
+                        <form asp-action="AddToRole" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="UserId" />
+                            <input type="hidden" asp-for="UserName" />
+
+                            <div class="mb-3">
+                                <label asp-for="SelectedRole" class="form-label">Select Role</label>
+                                <select asp-for="SelectedRole" class="form-select">
+                                    <option value="">-- Select a role --</option>
+                                    @foreach (var role in Model.AvailableRoles)
+                                    {
+                                        <option value="@role">@role</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add Role</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No available roles to assign.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <a asp-action="UserDetails" asp-route-id="@Model.UserId" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to User Details
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
